@@ -28,7 +28,7 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch("http://localhost:9200")
 client_info = es.info()
 print("Elasticsearch Client Info:")
-pprint(client_info.body)
+print(client_info.body)
 
 es.indices.delete(index='my_index', ignore_unavailable=True)
 es.indices.create(index='my_index', settings={
