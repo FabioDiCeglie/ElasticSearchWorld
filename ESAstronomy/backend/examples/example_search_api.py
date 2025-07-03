@@ -58,3 +58,83 @@ print(f"Found {n_hits} documents across both indices (alternative syntax)")
 response = es.search(index='_all')
 n_hits = response['hits']['total']['value']
 print(f"Found {n_hits} documents across all indices")
+
+print("--------------------------------------------------")
+
+# Search for documents with a specific field value using term query
+response = es.search(index='my_index', body={
+    "query": {
+        "term": {
+            "created_on": "2024-09-22"
+        }
+    }
+})
+n_hits = response['hits']['total']['value']
+print(f"Found {n_hits} documents with created_at = '2024-09-22'")
+retrieved_docs = response['hits']['hits']
+print(f"Retrieved documents: {retrieved_docs}")
+
+print("--------------------------------------------------")
+
+# Search for any document that contains the word document in the text field
+response = es.search(index='my_index', body={
+    "query": {
+        "match": {
+            "text": "document"
+        }
+    }
+})
+n_hits = response['hits']['total']['value']
+print(f"Found {n_hits} documents containing the word 'document' in the text field")
+retrieved_docs = response['hits']['hits']
+print(f"Retrieved documents: {retrieved_docs}")
+
+print("--------------------------------------------------")
+
+# Search for documents that were created before 2024-09-23 using range query
+response = es.search(index='my_index', body={
+    "query": {
+        "range": {
+            "created_on": {
+                "lte": "2024-09-23"
+            }
+        }
+    }
+})
+n_hits = response['hits']['total']['value']
+print(f"Found {n_hits} documents created before 2024-09-23 using range query")
+retrieved_docs = response['hits']['hits']
+print(f"Retrieved documents: {retrieved_docs}")
+
+print("--------------------------------------------------")
+
+# Search for documents that meet the following criteria:
+# - created_on is 2024-09-24
+# Have the word third in the text field
+response = es.search(index='my_index', body={
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "text": "third"
+                    }
+                },
+                {
+                    "range": {
+                        "created_on": {
+                            "gte": "2024-09-24",
+                            "lt": "2024-09-25"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+})
+n_hits = response['hits']['total']['value']
+print(f"Found {n_hits} documents with 'third' in text and created_on = '2024-09-24' using bool query and must clause")
+retrieved_docs = response['hits']['hits']
+print(f"Retrieved documents: {retrieved_docs}")
+
+print("--------------------------------------------------")
