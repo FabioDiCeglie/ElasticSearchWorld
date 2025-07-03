@@ -138,3 +138,84 @@ retrieved_docs = response['hits']['hits']
 print(f"Retrieved documents: {retrieved_docs}")
 
 print("--------------------------------------------------")
+
+dummy_data = json.load(open('../../data/dummy_data_2.json'))
+for document in tqdm(dummy_data, total=len(dummy_data)):
+    response = es.index(index='my_index', body=document)
+
+# Force refresh the index to make documents searchable
+es.indices.refresh(index='my_index')
+
+# Search for documents and add size and from parameters
+# This will return 3 results, skipping the first 2
+response = es.search(index='my_index', body={
+    "query": {
+        "match_all": {}
+    },
+    "size": 3,
+    "from": 2  # Skip the first 2 results
+})
+for hit in response['hits']['hits']:
+    print("Retrieved the first 3 results but skip the first 2", hit["_source"])
+
+print("--------------------------------------------------")
+
+# Search for documents with a timeout
+response = es.search(index='my_index', body={
+    "query": {
+        "match": {
+            "text": "document"
+        }
+    },
+    "timeout": "2s",  # Set a timeout of 2 seconds for the search
+})
+
+print(f"Search completed with timeout. Took {response['took']} ms")
+
+print("--------------------------------------------------")
+
+# Search average age across all documents
+response = es.search(index='my_index', body={
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "avg_age": {
+            "avg": {
+                "field": "age"  # Assuming 'age' is a field in your documents
+            }
+        }   
+    }
+})
+
+average_age = response['aggregations']['avg_age']['value']
+print(f"Average age across all documents: {average_age}")
+
+print("--------------------------------------------------")
+
+
+response = es.search(index='my_index', body={
+    "query": {
+        "match": {
+            "message": "important keyword" 
+        }
+    },
+    "aggs": {
+        "maxPrice": {
+            "max": {
+                "field": "price"
+            }
+        }   
+    },
+    "size": 5,
+    "from": 0,  # Start from the first result,
+    "timeout": "5s"  # Set a timeout of 5 seconds for the search
+})
+
+for hit in response['hits']['hits']:
+    print("Retrieved document with message = important keyword, size = 5, from = 0, timeout = 5s :", hit["_source"])
+
+max_price = response['aggregations']['maxPrice']['value']
+print(f"Maximum price across all documents: {max_price}")
+
+print("--------------------------------------------------")
