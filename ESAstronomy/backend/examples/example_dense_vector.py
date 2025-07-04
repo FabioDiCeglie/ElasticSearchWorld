@@ -1,6 +1,4 @@
 from elasticsearch import Elasticsearch
-import json
-from tqdm import tqdm
 
 es = Elasticsearch("http://localhost:9200")
 client_info = es.info()
