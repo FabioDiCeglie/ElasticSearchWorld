@@ -1,5 +1,4 @@
-# Converting text into dense vectors and indexing them in Elasticsearch
-# Use embedding models for retrieving documents based on semantic similarity or searching for specific keywords.
+# We use kNN search for fields mapped as dense_vector in Elasticsearch.
 
 from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
@@ -34,7 +33,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = model.to(device)
 
-documents = json.load(open('../../data/dummy_data.json'))
+documents = json.load(open('../../data/knn_search.json'))
 
 
 def get_embedding(text):
@@ -46,7 +45,7 @@ for document in tqdm(documents, total=len(documents)):
     operations.append({
         "index": {"_index": "my_index"}})
     operations.append(
-        {**document, "embedding": get_embedding(document['text'])})
+        {**document, "embedding": get_embedding(document['content'])})
 
 response = es.bulk(operations=operations, refresh='wait_for')
 print(f"Indexed {len(documents)} documents with embeddings")
@@ -58,10 +57,48 @@ response = es.search(index='my_index', body={
         "match_all": {}
     }})
 
-print(f"Found: {response['hits']['hits']}")
+print(f"Found: {len(response['hits']['hits'])} documents")
 
 print("--------------------------------------------------")
 
-# Note: Get and display the index mapping to verify the structure
-response = es.indices.get_mapping(index='my_index')
-print(f"Mapping: {response['my_index']['mappings']}")
+query = "What is a black hole?"
+embedded_query = get_embedding(query)
+
+response = es.search(index='my_index', knn={
+    "field": "embedding",
+    "query_vector": embedded_query,
+    "num_candidates": 5,
+    "k": 3,
+}
+)
+print(f"Found {len(response['hits']['hits'])} documents for query '{query}':")
+print("--------------------------------------------------")
+hits = response['hits']['hits']
+for hit in hits:
+    print(f"Title: {hit['_source']['title']}")
+    print(f"Content: {hit['_source']['content']}")
+    print(f"Score: {hit['_score']}")
+    print("*"*10)
+
+print("--------------------------------------------------")
+
+query = "How do we find exoplanets?"
+embedded_query = get_embedding(query)
+
+response = es.search(index='my_index', knn={
+    "field": "embedding",
+    "query_vector": embedded_query,
+    "num_candidates": 5,
+    "k": 3,
+}
+)
+print(f"Found {len(response['hits']['hits'])} documents for query '{query}':")
+print("--------------------------------------------------")
+hits = response['hits']['hits']
+for hit in hits:
+    print(f"Title: {hit['_source']['title']}")
+    print(f"Content: {hit['_source']['content']}")
+    print(f"Score: {hit['_score']}")
+    print("*"*10)
+
+print("--------------------------------------------------")
