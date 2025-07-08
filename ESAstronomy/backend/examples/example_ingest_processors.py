@@ -1,8 +1,4 @@
 from elasticsearch import Elasticsearch
-from tqdm import tqdm
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-
 
 es = Elasticsearch("http://localhost:9200")
 client_info = es.info()
