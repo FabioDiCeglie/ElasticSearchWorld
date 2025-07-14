@@ -16,7 +16,7 @@ def index_data(documents: List[dict]):
 
 def create_index(es: Elasticsearch, index_name: str) -> dict:
     es.indices.delete(index=index_name, ignore_unavailable=True)
-    return es.indices.create(index=index_name, ignore_existing=True)
+    return es.indices.create(index=index_name)
 
 
 def insert_document(es: Elasticsearch, documents: List[dict]) -> dict:
@@ -28,7 +28,7 @@ def insert_document(es: Elasticsearch, documents: List[dict]) -> dict:
 
 
 if __name__ == "__main__":
-    with open('data/apod.json') as file:
+    with open('./data_astronomy_api.json') as file:
         documents = json.load(file)
 
     index_data(documents=documents)
