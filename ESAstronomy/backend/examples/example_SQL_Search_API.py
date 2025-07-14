@@ -8,7 +8,7 @@ es.indices.delete(index='my_index', ignore_unavailable=True)
 es.indices.create(index='my_index')
 
 operations = []
-clothes_documents = json.load(open("../../data/astronomy.json"))
+clothes_documents = json.load(open("./data/astronomy.json"))
 
 for document in clothes_documents:
     operations.append({'index': {'_index': 'my_index'}})

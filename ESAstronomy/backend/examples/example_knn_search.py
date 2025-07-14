@@ -33,7 +33,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = model.to(device)
 
-documents = json.load(open('../../data/knn_search.json'))
+documents = json.load(open('./data/knn_search.json'))
 
 
 def get_embedding(text):

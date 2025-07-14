@@ -48,7 +48,7 @@ print(response.body)
 # print(response.body)
 
 
-dummy_data = json.load(open('../../data/dummy_data.json'))
+dummy_data = json.load(open('./data/dummy_data.json'))
 for i, document in enumerate(dummy_data):
     uppercased_text = document['text'].upper()
     document['text'] = uppercased_text

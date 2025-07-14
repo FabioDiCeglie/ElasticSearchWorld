@@ -14,7 +14,7 @@ es.indices.create(index='my_index', settings={
 )
 
 operations = []
-clothes_documents = json.load(open("../../data/clothes.json"))
+clothes_documents = json.load(open("./data/clothes.json"))
 
 for document in clothes_documents:
     operations.append({'index': {'_index': 'my_index'}})

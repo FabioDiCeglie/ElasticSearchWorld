@@ -15,7 +15,7 @@ es.indices.create(index='my_index', settings={
 )
 
 document_ids = []
-dummy_data = json.load(open('../../data/dummy_data.json'))
+dummy_data = json.load(open('./data/dummy_data.json'))
 for document in tqdm(dummy_data, total=len(dummy_data)):
     response = es.index(index='my_index', body=document, refresh='wait_for')
     print(f"Indexed document ID: {response['_id']}")

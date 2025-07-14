@@ -16,7 +16,7 @@ es.indices.create(index='my_index', settings={
 es.indices.delete(index='my_index_2', ignore_unavailable=True)
 es.indices.create(index='my_index_2')
 
-dummy_data = json.load(open('../../data/dummy_data.json'))
+dummy_data = json.load(open('./dummy_data.json'))
 for document in tqdm(dummy_data, total=len(dummy_data)):
     response = es.index(index='my_index', body=document)
 
@@ -139,7 +139,7 @@ print(f"Retrieved documents: {retrieved_docs}")
 
 print("--------------------------------------------------")
 
-dummy_data = json.load(open('../../data/dummy_data_2.json'))
+dummy_data = json.load(open('./data/dummy_data_2.json'))
 for document in tqdm(dummy_data, total=len(dummy_data)):
     response = es.index(index='my_index', body=document)
 

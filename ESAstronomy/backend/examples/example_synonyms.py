@@ -47,7 +47,7 @@ response = es.indices.create(index=index_name, body=settings)
 print(response.body)
 
 operations = []
-dummy_data = json.load(open("../../data/synonyms.json"))
+dummy_data = json.load(open("./data/synonyms.json"))
 for document in tqdm(dummy_data, total=len(dummy_data)):
     operations.append({'index': {'_index': index_name}})
     operations.append(document)
@@ -127,7 +127,7 @@ response = es.indices.create(index=index_name, body=settings)
 # print(response.body)
 
 operations = []
-dummy_data = json.load(open("../../data/synonyms.json"))
+dummy_data = json.load(open("./data/synonyms.json"))
 for document in tqdm(dummy_data, total=len(dummy_data)):
     operations.append({'index': {'_index': index_name}})
     operations.append(document)
