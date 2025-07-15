@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-from utils import get_es_client
-from config import INDEX_NAME
+from utils import get_es_client, get_index_name
 
 
 app = FastAPI()
@@ -20,7 +19,7 @@ app.add_middleware(
 async def search(search_query: str, skip: int = 0, limit: int = 10, year: str | None = None) -> dict:
     try:
         es = get_es_client(max_retries=1, sleep_time=0)
-        
+
         query = {
             "bool": {
                 "must": [
@@ -46,7 +45,7 @@ async def search(search_query: str, skip: int = 0, limit: int = 10, year: str | 
                 }
             ]
         response = es.search(
-            index=INDEX_NAME,
+            index=get_index_name(use_n_gram_tokenizer=True),
             body={
                 "query": query,
                 "from": skip,
@@ -92,7 +91,7 @@ async def get_docs_per_year_count(search_query: str) -> dict:
             }
         }
         response = es.search(
-            index=INDEX_NAME,
+            index=get_index_name(use_n_gram_tokenizer=True),
             body={
                 "query": query,
                 "aggs": {
