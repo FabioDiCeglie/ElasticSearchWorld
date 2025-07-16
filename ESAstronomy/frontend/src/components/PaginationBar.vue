@@ -214,6 +214,7 @@ export default {
 .pagination-btn {
   background: transparent;
   height: 4rem;
+  color: white;
   border: 1px solid rgba(234, 94, 19, 0.2);
   padding: 1rem;
   border-radius: 0rem;
@@ -232,6 +233,7 @@ export default {
 
 .current-page {
   margin: 0 1rem;
+  color: white;
 }
 
 .fade-enter-active,
