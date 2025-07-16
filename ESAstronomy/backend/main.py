@@ -1,6 +1,8 @@
+import torch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from sentence_transformers import SentenceTransformer
 
 from utils import get_es_client, get_index_name
 
@@ -13,6 +15,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = SentenceTransformer('all-MiniLM-L6-v2', device=device)
 
 
 @app.get("/api/v1/search/")
