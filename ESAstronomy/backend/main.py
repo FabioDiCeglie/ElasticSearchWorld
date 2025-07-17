@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sentence_transformers import SentenceTransformer
 
-from config import INDEX_NAME_EMBEDDING
+from config import INDEX_NAME_EMBEDDING, INDEX_NAME_RAW
 from utils import get_es_client, get_index_name
 
 
@@ -104,6 +104,8 @@ async def regular_search(search_query: str, skip: int = 0, limit: int = 10, year
             ]
         response = es.search(
             index=get_index_name(use_n_gram_tokenizer=True),
+            # if you want to check the pipeline implementation, you can use:
+            # index=INDEX_NAME_RAW,
             body={
                 "query": query,
                 "from": skip,
@@ -140,6 +142,8 @@ async def get_docs_per_year_count(search_query: str) -> dict:
         }
         response = es.search(
             index=get_index_name(use_n_gram_tokenizer=True),
+            # if you want to check the pipeline implementation, you can use:
+            # index=INDEX_NAME_RAW,
             body={
                 "query": query,
                 "aggs": {
